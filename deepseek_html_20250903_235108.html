@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grabador de Patentes Unificado</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Montserrat&family=Oswald&family=Lobster&family=Courier+Prime&family=Orbitron&family=PT+Sans+Narrow&family=Anton&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Grabador de Patentes Unificado</h1>
+  </header>
+  <nav>
+    <button onclick="mostrarSeccion('appGeneral')">App General</button>
+    <button onclick="mostrarSeccion('appChilena')">Patente Chilena</button>
+  </nav>
+  <div class="container">
+    <!-- App General -->
+    <section id="appGeneral" class="form-section">
+      <h2>Grabador de Patente General</h2>
+      <label>Patente:</label>
+      <input type="text" id="patenteGeneral" />
+
+      <label>Subir imagen para escanear patente (OCR):</label>
+      <input type="file" accept="image/*" onchange="leerOCR(this, 'patenteGeneral', 'vistaPreviaGeneral')" />
+
+      <label>Seleccionar Fuente:</label>
+      <select id="fuenteGeneral">
+        <option value="Roboto">Roboto</option>
+        <option value="Open Sans">Open Sans</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Oswald">Oswald</option>
+        <option value="Lobster">Lobster</option>
+        <option value="Courier Prime">Courier Prime</option>
+        <option value="Orbitron">Orbitron</option>
+        <option value="PT Sans Narrow">PT Sans Narrow</option>
+        <option value="Anton">Anton</option>
+      </select>
+
+      <label>Tamaño de letra (px):</label>
+      <input type="number" id="tamanoLetraGeneral" value="48" min="10" max="200" />
+
+      <label>Grosor de letra:</label>
+      <select id="grosorLetraGeneral">
+        <option value="300">Delgada</option>
+        <option value="500">Mediana</option>
+        <option value="800">Gruesa</option>
+      </select>
+
+      <label>Tamaño del logo (px):</label>
+      <input type="number" id="tamanoLogoGeneral" value="40" min="10" max="200" />
+
+      <label>Seleccionar Marca:</label>
+      <select id="marcaGeneral" onchange="mostrarInputCustomGeneral(this.value)">
+        <option value="">Sin logo</option>
+        <option value="toyota">Toyota</option>
+        <option value="chevrolet">Chevrolet</option>
+        <option value="ford">Ford</option>
+        <option value="honda">Honda</option>
+        <option value="bmw">BMW</option>
+        <option value="mercedes">Mercedes</option>
+        <option value="audi">Audi</option>
+        <option value="hyundai">Hyundai</option>
+        <option value="volkswagen">Volkswagen</option>
+        <option value="nissan">Nissan</option>
+        <option value="kia">Kia</option>
+        <option value="peugeot">Peugeot</option>
+        <option value="renault">Renault</option>
+        <option value="fiat">Fiat</option>
+        <option value="tesla">Tesla</option>
+        <option value="jeep">Jeep</option>
+        <option value="mazda">Mazda</option>
+        <option value="subaru">Subaru</option>
+        <option value="mitsubishi">Mitsubishi</option>
+        <option value="suzuki">Suzuki</option>
+        <option value="landrover">Land Rover</option>
+        <option value="volvo">Volvo</option>
+        <option value="bentley">Bentley</option>
+        <option value="ferrari">Ferrari</option>
+        <option value="lamborghini">Lamborghini</option>
+        <option value="porsche">Porsche</option>
+        <option value="bugatti">Bugatti</option>
+        <option value="ram">RAM</option>
+        <option value="scania">Scania</option>
+        <option value="man">MAN</option>
+        <option value="daf">DAF</option>
+        <option value="kenworth">Kenworth</option>
+        <option value="mack">Mack</option>
+        <option value="ducati">Ducati</option>
+        <option value="yamaha">Yamaha</option>
+        <option value="harley">Harley-Davidson</option>
+        <option value="ktm">KTM</option>
+        <option value="suzuki-moto">Suzuki (moto)</option>
+        <option value="kawasaki">Kawasaki</option>
+        <option value="zero">Zero</option>
+        <option value="nio">NIO</option>
+        <option value="lucid">Lucid Motors</option>
+        <option value="rivian">Rivian</option>
+        <option value="classic">Vehículo Clásico</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <div id="customLogoInputGeneral" style="display:none;">
+        <label>Subir logo personalizado:</label>
+        <input type="file" id="customLogoFileGeneral" accept="image/*" />
+      </div>
+
+      <button onclick="generarVistaPreviaGeneral()">Vista Previa</button>
+      <div class="preview" id="vistaPreviaGeneral"></div>
+      <button onclick="descargarComoPNG('vistaPreviaGeneral')">Descargar PNG</button>
+      <button onclick="compartirWhatsapp('patenteGeneral')">Compartir por WhatsApp</button>
+
+      <h3>Historial de patentes</h3>
+      <ul id="historialGeneral" class="historial-lista"></ul>
+    </section>
+
+    <!-- Patente Chilena -->
+    <section id="appChilena" class="form-section hide">
+      <h2>Patente Chilena</h2>
+      <label>Patente:</label>
+      <input type="text" id="patenteChilena" />
+
+      <label>Subir imagen para escanear patente (OCR):</label>
+      <input type="file" accept="image/*" onchange="leerOCR(this, 'patenteChilena', 'vistaPreviaChilena')" />
+
+      <label>Seleccionar Fuente:</label>
+      <select id="fuenteChilena">
+        <option value="Roboto">Roboto</option>
+        <option value="Courier Prime">Courier Prime</option>
+        <option value="Anton">Anton</option>
+      </select>
+
+      <label>Tamaño de letra (px):</label>
+      <input type="number" id="tamanoLetraChilena" value="48" min="10" max="200" />
+
+      <label>Grosor de letra:</label>
+      <select id="grosorLetraChilena">
+        <option value="300">Delgada</option>
+        <option value="500">Mediana</option>
+        <option value="800">Gruesa</option>
+      </select>
+
+      <label>Tamaño del logo (px):</label>
+      <input type="number" id="tamanoLogoChilena" value="40" min="10" max="200" />
+
+      <label>Seleccionar Marca:</label>
+      <select id="marcaChilena" onchange="mostrarInputCustomChilena(this.value)">
+        <option value="">Sin logo</option>
+        <option value="toyota">Toyota</option>
+        <option value="chevrolet">Chevrolet</option>
+        <option value="ford">Ford</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <div id="customLogoInputChilena" style="display:none;">
+        <label>Subir Logo Personalizado (PNG, JPG, WEBP):</label>
+        <input type="file" id="customLogoFileChilena" accept="image/png, image/jpeg, image/webp" />
+      </div>
+
+      <button onclick="generarVistaPreviaChilena()">Vista Previa</button>
+      <div class="preview" id="vistaPreviaChilena"></div>
+      <button onclick="descargarComoPNG('vistaPreviaChilena')">Descargar PNG</button>
+      <button onclick="compartirWhatsapp('patenteChilena')">Compartir por WhatsApp</button>
+
+      <h3>Historial de patentes</h3>
+      <ul id="historialChilena" class="historial-lista"></ul>
+    </section>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
