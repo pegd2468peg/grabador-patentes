@@ -1,1 +1,0 @@
-# grabador-patentes
